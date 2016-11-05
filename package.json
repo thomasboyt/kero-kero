@@ -18,5 +18,9 @@
     "webpack": "^1.13.3",
     "webpack-create-vendor-chunk": "^0.1.1",
     "webpack-dev-server": "^1.16.2"
+  },
+  "dependencies": {
+    "p2": "https://github.com/thomasboyt/p2.js#master-built",
+    "pixi.js": "^4.1.1"
   }
 }
