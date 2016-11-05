@@ -9,6 +9,8 @@ document.querySelector('.game-container')!.appendChild(renderer.view);
 registerListeners();
 
 const stage = new Pixi.Container();
+const container = new Pixi.Container();
+stage.addChild(container);
 
 const world = new p2.World();
 
@@ -44,9 +46,24 @@ function createStaticBox(opts: BoxOptions) {
   return boxBody;
 }
 
-const platformData = [{
-  width: 10, height: 10, x: 0, y: -20
-}];
+function getWalls(): BoxOptions[] {
+  const worldWidth = 150;
+  const worldHeight = 150;
+  const wallSize = 5;
+
+  return [
+    {width: worldWidth + wallSize * 2, height: wallSize, x: 0, y: worldHeight / 2 + wallSize / 2},
+    {width: worldWidth + wallSize * 2, height: wallSize, x: 0, y: -(worldHeight / 2 + wallSize / 2)},
+    {width: wallSize, height: worldHeight, x: worldWidth / 2 + wallSize / 2, y: 0},
+    {width: wallSize, height: worldHeight, x: -(worldWidth / 2 + wallSize / 2), y: 0},
+  ];
+}
+
+const platformData = [
+  ...getWalls(),
+
+  {width: 10, height: 10, x: 0, y: -20},
+];
 
 function init() {
   /*
@@ -85,7 +102,7 @@ function init() {
   stage.position.y = renderer.height / 2;
 
   // zoom in
-  const zoom = 10;
+  const zoom = 5;
   stage.scale.x = zoom;
   stage.scale.y = -zoom;  // y axis is flipped because physics up and rendering up are opposite
 
@@ -99,10 +116,10 @@ function init() {
     platformGraphics.drawRect(-platform.width/2, -platform.height/2, platform.width, platform.height);
     platformGraphics.position.x = platform.x;
     platformGraphics.position.y = platform.y;
-    stage.addChild(platformGraphics);
+    container.addChild(platformGraphics);
   });
 
-  stage.addChild(playerGraphics);
+  container.addChild(playerGraphics);
 
   renderState = {
     playerGraphics,
@@ -132,6 +149,9 @@ function update(dt: number) {
   playerGraphics.position.x = playerBody.position[0];
   playerGraphics.position.y = playerBody.position[1];
   playerGraphics.rotation = playerBody.angle;
+
+  container.x = -playerBody.position[0];
+  container.y = -playerBody.position[1];
 
   renderer.render(stage);
 }
