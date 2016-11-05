@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "run": "webpack-dev-server",
+    "deploy": "rm -rf build && webpack && surge -p build/ -d kero-kero.surge.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
